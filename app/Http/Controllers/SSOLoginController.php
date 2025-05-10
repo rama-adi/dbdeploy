@@ -78,7 +78,7 @@ class SSOLoginController extends Controller
             value: $token,
             expires_or_options: $expiry,
             path: '/',
-            domain: env('COOKIE_DOMAIN'),
+            domain: env('COOKIE_URL'),
             httponly: true,
             secure: true
         );

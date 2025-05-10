@@ -22,7 +22,7 @@ class SSOLoginPageStandaloneController extends Controller
                 value: '',
                 expires_or_options: time() - 3600,
                 path: '/',
-                domain: env('COOKIE_DOMAIN'),
+                domain: env('COOKIE_URL'),
                 httponly: true,
                 secure: true
             );
