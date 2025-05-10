@@ -13,24 +13,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type SSOSubmit = {
-    databaseId: string;
+    databaseId: number;
 };
 
 type Database = {
     id: number;
     name: string;
     databaseName: string;
-    loginNoncesCount: number;
 };
 
 export default function Dashboard({ databases }: { databases: Database[] }) {
     const { post, processing } = useForm<Required<SSOSubmit>>({
-        databaseId: '',
+        databaseId: 0,
     });
 
-    const loginSSO = (databaseId: string) => {
+    const loginSSO = (databaseId: number) => {
         post(
-            route('sso.login', {
+            route('sso.login.id', {
                 databaseInfo: databaseId,
             }),
         );
@@ -47,7 +46,6 @@ export default function Dashboard({ databases }: { databases: Database[] }) {
                         <TableRow>
                             <TableHead className="w-1/4">Database Name</TableHead>
                             <TableHead className="w-1/4">Database</TableHead>
-                            <TableHead className="w-1/4">Login Nonces Count</TableHead>
                             <TableHead className="w-1/4">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -58,17 +56,16 @@ export default function Dashboard({ databases }: { databases: Database[] }) {
                                 <TableCell>
                                     <span className="font-mono">{database.databaseName}</span>
                                 </TableCell>
-                                <TableCell>{database.loginNoncesCount}</TableCell>
                                 <TableCell>
                                     <Button
-                                        onClick={() => loginSSO(database.databaseName)}
+                                        onClick={() => loginSSO(database.id)}
                                         type="submit"
                                         className="mt-4 w-full"
                                         tabIndex={4}
                                         disabled={processing}
                                     >
                                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                        Log in
+                                        PhpMyAdmin
                                     </Button>
                                 </TableCell>
                             </TableRow>

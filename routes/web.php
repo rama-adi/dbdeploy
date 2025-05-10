@@ -11,7 +11,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::post('/sso-login/{databaseInfo}', SSOLoginController::class)->name('sso.login');
+    Route::post('/sso-login', [SSOLoginController::class, 'viaDirect'])->name('sso.login');
+    Route::post('/sso-login/{databaseInfo}', [SSOLoginController::class, 'viaID'])->name('sso.login.id');
 });
 
 require __DIR__ . '/settings.php';

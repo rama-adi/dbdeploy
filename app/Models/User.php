@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DatabaseInfo::class, 'user_id');
     }
+
+    public function phpmyadminSessions()
+    {
+        return $this->hasMany(PhpmyadminSession::class, 'user_id');
+    }
 }

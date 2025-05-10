@@ -13,19 +13,17 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {
         $databases = $request->user()
-            ->load(['databaseInfos', 'databaseInfos.loginNonces'])
+            ->load(['databaseInfos'])
             ->databaseInfos
             ->map(function ($databaseInfo) {
                 return [
                     'id' => $databaseInfo->id,
                     'name' => $databaseInfo->name,
                     'databaseName' => $databaseInfo->database_name,
-                    'loginNoncesCount' => $databaseInfo->loginNonces->count(),
                 ];
             });
         return Inertia::render('dashboard', [
             'databases' => $databases,
-
         ]);
     }
 }
