@@ -47,18 +47,14 @@ class SSOLoginController extends Controller
     private function login(User $user, DatabaseInfo $databaseInfo): \Symfony\Component\HttpFoundation\Response
     {
         $token = Str::random(60);
-        $user
-            ->phpmyadminSessions()
-            ->create([
-                'expired_at' => now()->addHour(),
-                'token' => Str::random(60),
-                'username' => $databaseInfo->username,
-                'password' => $databaseInfo->password,
-            ]);
 
+        $user->phpmyadminSessions()->create([
+            'expired_at' => now()->addHour(),
+            'token' => $token, // ✅ same token
+            'username' => $databaseInfo->username,
+            'password' => $databaseInfo->password,
+        ]);
 
-        // set cookie on phpmyadmin.yucca-ai.xyz
-        // 1h expiry
         setcookie(
             name: 'PMA_TOKEN',
             value: $token,
@@ -71,4 +67,5 @@ class SSOLoginController extends Controller
 
         return Inertia::location('https://phpmyadmin.yucca-ai.xyz/index.php?route=/database/structure&db=' . $databaseInfo->database_name);
     }
+
 }
