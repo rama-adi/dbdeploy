@@ -46,26 +46,47 @@ class SSOLoginController extends Controller
      */
     private function login(User $user, DatabaseInfo $databaseInfo): \Symfony\Component\HttpFoundation\Response
     {
-        $token = Str::random(60);
+        $now = time();
 
-        $user->phpmyadminSessions()->create([
-            'expired_at' => now()->addHour()->unix(),
-            'token' => $token, // ✅ same token
-            'username' => $databaseInfo->username,
-            'password' => $databaseInfo->password,
-        ]);
+        // Look for a valid session with same username and password
+        $latestSession = $user->phpmyadminSessions()
+            ->where('username', $databaseInfo->username)
+            ->where('password', $databaseInfo->password)
+            ->orderByDesc('expired_at')
+            ->first();
 
+        if ($latestSession && (int) $latestSession->expired_at > $now) {
+            // Reuse token and its expiry
+            $token = $latestSession->token;
+            $expiry = (int) $latestSession->expired_at;
+        } else {
+            // Create new token and expiry
+            $token = Str::random(60);
+            $expiry = $now + 3600; // 1 hour
+
+            $user->phpmyadminSessions()->create([
+                'expired_at' => $expiry, // UNIX timestamp
+                'token'      => $token,
+                'username'   => $databaseInfo->username,
+                'password'   => $databaseInfo->password,
+            ]);
+        }
+
+        // Set PMA_TOKEN cookie to match session expiration
         setcookie(
             name: 'PMA_TOKEN',
             value: $token,
-            expires_or_options: time() + 3600,
+            expires_or_options: $expiry,
             path: '/',
             domain: '.yucca-ai.xyz',
             httponly: true,
             secure: true
         );
 
-        return Inertia::location('https://phpmyadmin.yucca-ai.xyz/index.php?route=/database/structure&db=' . $databaseInfo->database_name);
+        return Inertia::location(
+            'https://phpmyadmin.yucca-ai.xyz/index.php?route=/database/structure&db=' . $databaseInfo->database_name
+        );
     }
+
 
 }
