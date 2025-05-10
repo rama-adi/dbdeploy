@@ -49,7 +49,7 @@ class SSOLoginController extends Controller
         $token = Str::random(60);
 
         $user->phpmyadminSessions()->create([
-            'expired_at' => now()->addHour(),
+            'expired_at' => now()->addHour()->unix(),
             'token' => $token, // ✅ same token
             'username' => $databaseInfo->username,
             'password' => $databaseInfo->password,

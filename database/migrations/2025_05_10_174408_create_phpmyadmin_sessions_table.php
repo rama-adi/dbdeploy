@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('token')->unique();
             $table->string('username');
             $table->string('password');
-            $table->dateTime('expired_at')->nullable();
+            $table->integer('expired_at');
             $table->timestamps();
             $table->index('token');
         });
