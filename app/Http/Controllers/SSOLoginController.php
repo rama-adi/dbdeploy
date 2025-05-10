@@ -64,7 +64,7 @@ class SSOLoginController extends Controller
             value: $token,
             expires_or_options: time() + 3600,
             path: '/',
-            domain: 'phpmyadmin.yucca-ai.xyz',
+            domain: '.yucca-ai.xyz',
             httponly: true,
             secure: true
         );
