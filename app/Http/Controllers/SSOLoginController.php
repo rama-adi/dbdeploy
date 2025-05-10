@@ -78,7 +78,7 @@ class SSOLoginController extends Controller
             value: $token,
             expires_or_options: $expiry,
             path: '/',
-            domain: '.yucca-ai.xyz',
+            domain: env('COOKIE_DOMAIN'),
             httponly: true,
             secure: true
         );

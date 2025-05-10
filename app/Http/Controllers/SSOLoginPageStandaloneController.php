@@ -22,7 +22,7 @@ class SSOLoginPageStandaloneController extends Controller
                 value: '',
                 expires_or_options: time() - 3600,
                 path: '/',
-                domain: '.yucca-ai.xyz',
+                domain: env('COOKIE_DOMAIN'),
                 httponly: true,
                 secure: true
             );
